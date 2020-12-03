@@ -255,26 +255,280 @@ Finalmente, luego de definir todos los archivos de Configuración de Infraestruc
 
 - `$ terraform init`
 
-Una vez listo, vamos a revisar cuál sería el resultado de aplicar nuestra nueva configuración
+```
+➜  basic-terraform git:(master) terraform init
+2020/12/03 00:39:36 [WARN] Log levels other than TRACE are currently unreliable, and are supported only for backward compatibility.
+  Use TF_LOG=TRACE to see Terraform's internal logs.
+  ----
+2020/12/03 00:39:36 [INFO] Terraform version: 0.13.1
+2020/12/03 00:39:36 [INFO] Go runtime version: go1.14.7
+2020/12/03 00:39:36 [INFO] CLI args: []string{"/home/shisus/opt/terraform/terraform", "init"}
+2020/12/03 00:39:36 [INFO] CLI command args: []string{"init"}
+2020/12/03 00:39:36 [WARN] Log levels other than TRACE are currently unreliable, and are supported only for backward compatibility.
+  Use TF_LOG=TRACE to see Terraform's internal logs.
+  ----
+
+Initializing the backend...
+2020/12/03 00:39:36 [INFO] Failed to read plugin lock file .terraform/plugins/linux_amd64/lock.json: open .terraform/plugins/linux_amd64/lock.json: no such file or directory
+
+Initializing provider plugins...
+2020/12/03 00:39:36 [WARN] Failed to scan provider cache directory .terraform/plugins: cannot search .terraform/plugins: lstat .terraform/plugins: no such file or directory
+- Finding digitalocean/digitalocean versions matching "1.22.2"...
+2020/12/03 00:39:37 [WARN] Log levels other than TRACE are currently unreliable, and are supported only for backward compatibility.
+  Use TF_LOG=TRACE to see Terraform's internal logs.
+  ----
+2020/12/03 00:39:37 [WARN] Log levels other than TRACE are currently unreliable, and are supported only for backward compatibility.
+  Use TF_LOG=TRACE to see Terraform's internal logs.
+  ----
+- Installing digitalocean/digitalocean v1.22.2...
+- Installed digitalocean/digitalocean v1.22.2 (signed by a HashiCorp partner, key ID F82037E524B9C0E8)
+
+Partner and community providers are signed by their developers.
+If you'd like to know more about provider signing, you can read about it here:
+https://www.terraform.io/docs/plugins/signing.html
+
+Terraform has been successfully initialized!
+
+You may now begin working with Terraform. Try running "terraform plan" to see
+any changes that are required for your infrastructure. All Terraform commands
+should now work.
+
+If you ever set or change modules or backend configuration for Terraform,
+rerun this command to reinitialize your working directory. If you forget, other
+commands will detect it and remind you to do so if necessary.
+```
+
+Luego de ejecutar este comando, deberíamos tener creada la carpeta `.terraform/plugins` con el plugin de DigitalOcean en la versión especificada.
+
+#### Armado de Plan
+
+Terraform funciona generando planes de ejecución con la infraestructura a crear. De esta manera, se pueden visualizar los objetos a crear en el proveedor definido.
+
+Podemos revisar el resultado de nuestra configuración con el siguiente comando:
 
 - `$ terraform plan`
+
+Que genera el siguiente output
+
+```shell
+➜  basic-terraform git:(master) ✗ terraform plan
+Refreshing Terraform state in-memory prior to plan...
+The refreshed state will be used to calculate this plan, but will not be
+persisted to local or remote state storage.
+
+data.digitalocean_ssh_key.do_ssh_key: Refreshing state...
+
+------------------------------------------------------------------------
+
+An execution plan has been generated and is shown below.
+Resource actions are indicated with the following symbols:
+  + create
+
+Terraform will perform the following actions:
+
+  # digitalocean_domain.default will be created
+  + resource "digitalocean_domain" "default" {
+      + id         = (known after apply)
+      + ip_address = (known after apply)
+      + name       = "**************"
+      + urn        = (known after apply)
+    }
+
+  # digitalocean_droplet.www will be created
+  + resource "digitalocean_droplet" "www" {
+      + backups              = false
+      + created_at           = (known after apply)
+      + disk                 = (known after apply)
+      + id                   = (known after apply)
+      + image                = "ubuntu-18-04-x64"
+      + ipv4_address         = (known after apply)
+      + ipv4_address_private = (known after apply)
+      + ipv6                 = false
+      + ipv6_address         = (known after apply)
+      + ipv6_address_private = (known after apply)
+      + locked               = (known after apply)
+      + memory               = (known after apply)
+      + monitoring           = false
+      + name                 = "www"
+      + price_hourly         = (known after apply)
+      + price_monthly        = (known after apply)
+      + private_networking   = true
+      + region               = "nyc1"
+      + resize_disk          = true
+      + size                 = "s-1vcpu-1gb"
+      + ssh_keys             = [
+          + "29068776",
+        ]
+      + status               = (known after apply)
+      + urn                  = (known after apply)
+      + vcpus                = (known after apply)
+      + volume_ids           = (known after apply)
+      + vpc_uuid             = (known after apply)
+    }
+
+  # digitalocean_loadbalancer.www-lb will be created
+  + resource "digitalocean_loadbalancer" "www-lb" {
+      + algorithm                = "round_robin"
+      + droplet_ids              = (known after apply)
+      + enable_backend_keepalive = false
+      + enable_proxy_protocol    = false
+      + id                       = (known after apply)
+      + ip                       = (known after apply)
+      + name                     = "www-lb"
+      + redirect_http_to_https   = false
+      + region                   = "nyc1"
+      + status                   = (known after apply)
+      + urn                      = (known after apply)
+      + vpc_uuid                 = (known after apply)
+
+      + forwarding_rule {
+          + entry_port      = 80
+          + entry_protocol  = "http"
+          + target_port     = 80
+          + target_protocol = "http"
+          + tls_passthrough = false
+        }
+
+      + healthcheck {
+          + check_interval_seconds   = 10
+          + healthy_threshold        = 5
+          + port                     = 22
+          + protocol                 = "tcp"
+          + response_timeout_seconds = 5
+          + unhealthy_threshold      = 3
+        }
+
+      + sticky_sessions {
+          + cookie_name        = (known after apply)
+          + cookie_ttl_seconds = (known after apply)
+          + type               = (known after apply)
+        }
+    }
+
+Plan: 3 to add, 0 to change, 0 to destroy.
+
+------------------------------------------------------------------------
+
+Note: You didn't specify an "-out" parameter to save this plan, so Terraform
+can't guarantee that exactly these actions will be performed if
+"terraform apply" is subsequently run.
+
+```
 
 Finalmente, aplicaremos nuestra configuración
 
 - `$ terraform apply`
 
-Luego de unos minutos, podemos ver el droplet creado. También podemos ver el estado actual de Terraform con el siguiente comando:
+Generando un output bastante extenso por lo que nos concentraremos en las partes interesantes:
+
+```
+Do you want to perform these actions?
+  Terraform will perform the actions described above.
+  Only 'yes' will be accepted to approve.
+
+  Enter a value: yes
+
+digitalocean_droplet.www: Creating...
+digitalocean_droplet.www: Still creating... [10s elapsed]
+digitalocean_droplet.www: Still creating... [20s elapsed]
+digitalocean_droplet.www: Provisioning with 'remote-exec'...
+digitalocean_droplet.www: Still creating... [50s elapsed]
+digitalocean_droplet.www (remote-exec): Connecting to remote host via SSH...
+digitalocean_droplet.www (remote-exec):   Host: 157.230.91.145
+digitalocean_droplet.www (remote-exec):   User: root
+digitalocean_droplet.www (remote-exec):   Password: false
+digitalocean_droplet.www (remote-exec):   Private key: true
+digitalocean_droplet.www (remote-exec):   Certificate: false
+digitalocean_droplet.www (remote-exec):   SSH Agent: true
+digitalocean_droplet.www (remote-exec):   Checking Host Key: false
+digitalocean_droplet.www (remote-exec): Connected!
+digitalocean_droplet.www (remote-exec): 0% [Working]
+digitalocean_droplet.www (remote-exec): Get:1 http://security.ubuntu.com/ubuntu bionic-security InRelease [88.7 kB]
+digitalocean_droplet.www (remote-exec): 0% [Waiting for headers] [1 InRelease 1
+....
+digitalocean_droplet.www: Creation complete after 2m35s [id=219696560]
+digitalocean_loadbalancer.www-lb: Creating...
+....
+digitalocean_loadbalancer.www-lb: Still creating... [1m40s elapsed]
+digitalocean_loadbalancer.www-lb: Creation complete after 1m45s [id=95019cdd-582f-48c8-abf5-ce0d5f65c3ac]
+digitalocean_domain.default: Creating...
+digitalocean_domain.default: Creation complete after 2s [id=**********]
+
+Apply complete! Resources: 3 added, 0 changed, 0 destroyed.
+```
+
+Luego de unos minutos, podemos ver los recursos creados.
+
+![terraform-recursos-do](https://i.ibb.co/F03hn23/3-terraform-do.png)
+
+Terraform mantiene el estado y configuraciones de la infraestructura deployada en un archivo llamado `terraform.tfstate`. Este archivo contiene la información de cada recurso y variables realizadas en el último despliegue. Además, el estado de este archivo se puede actualizar cuando se realizan cambios por fuera del mismo Terraform, por ejemplo, borrando droplets desde la interfáz gráfica de DigitalOcean.
+
+Podemos ver el estado actual de la infraestructura con el siguiente comando:
 
 - `$ terraform show terraform.tfstate`
 
 ### Destrucción de la Infraestructura
 
-Es posible destruir todos los objetos DigitalOcean creados en esta Infraestructura. Para esto terraform nos permite cambiar el plan a uno de destrucción mediante el argumento `-destroy`(también vamos a agregar -out para cargar este plan de destrucción en la variable tfplan de terraform)
+Es posible destruir todos los objetos DigitalOcean creados en esta Infraestructura. Para esto terraform nos permite cambiar el plan a uno de destrucción mediante el argumento `-destroy`(también vamos a agregar -out para cargar este plan de destrucción en la variable tfplan de terraform):
 - `$ terraform plan -destroy -out=terraform.tfplan`
 
-Finalmente, aplicamos este plan de destrucción
+El resultado de este comando es una secuencia de comandos muy extensa por lo que dejamos los más interesantes:
+
+```
+➜  basic-terraform git:(master) ✗ terraform plan -destroy -out=terraform.tfplan
+....
+data.digitalocean_ssh_key.do_ssh_key: Refreshing state... [id=29068776]
+digitalocean_droplet.www: Refreshing state... [id=219696560]
+digitalocean_loadbalancer.www-lb: Refreshing state... [id=95019cdd-582f-48c8-abf5-ce0d5f65c3ac]
+digitalocean_domain.default: Refreshing state... [id=******]
+
+------------------------------------------------------------------------
+
+An execution plan has been generated and is shown below.
+Resource actions are indicated with the following symbols:
+  - destroy
+
+Terraform will perform the following actions:
+
+  # digitalocean_domain.default will be destroyed
+  - resource "digitalocean_domain" "default" {
+.......
+  # digitalocean_droplet.www will be destroyed
+  - resource "digitalocean_droplet" "www" {
+.......
+  # digitalocean_loadbalancer.www-lb will be destroyed
+  - resource "digitalocean_loadbalancer" "www-lb" {
+.......
+Plan: 0 to add, 0 to change, 3 to destroy.
+
+------------------------------------------------------------------------
+
+This plan was saved to: terraform.tfplan
+
+To perform exactly these actions, run the following command to apply:
+    terraform apply "terraform.tfplan"
+```
+
+Podemos ver que serán destruidos los 3 recursos creados, aplicando el plan guardado en la variable `terraform.tfplan`.
+Finalmente, aplicamos el plan de destrucción:
 
 - `$ terraform apply terraform.tfplan`
+
+Con el siguiente resultado
+
+```
+➜  basic-terraform git:(master) ✗ terraform apply terraform.tfplan
+digitalocean_domain.default: Destroying... [id=********]
+digitalocean_domain.default: Destruction complete after 2s
+digitalocean_loadbalancer.www-lb: Destroying... [id=95019cdd-582f-48c8-abf5-ce0d5f65c3ac]
+digitalocean_loadbalancer.www-lb: Destruction complete after 1s
+digitalocean_droplet.www: Destroying... [id=219696560]
+digitalocean_droplet.www: Still destroying... [id=219696560, 10s elapsed]
+digitalocean_droplet.www: Still destroying... [id=219696560, 20s elapsed]
+digitalocean_droplet.www: Destruction complete after 24s
+
+Apply complete! Resources: 0 added, 0 changed, 3 destroyed.
+```
 
 Fin de la guia
 
