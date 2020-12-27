@@ -10,11 +10,11 @@ En esta guía veremos los pasos para implementar la creación de Droplets, un Lo
 
 Terraform funciona mediante archivos de configuración utilizando el formato Hashicorp Configuration Language(HCL), define múltiples objetos para la creación de Infraestructura de los cuáles destacamos: **provider**, **variable**, **data**, **resource** y **terraform**.
 
-- **terraform**: este objeto contiene la configuración principal del proyecto Terraform, es el lugar donde se definen los proveedores a utilizar. [Link](https://www.terraform.io/docs/configuration/terraform.html).
-- **provider**: este objeto contiene la configuración del proveedor a utilizar. Terraform puede utilizar diferentes tipos de proveedores Cloud como soluciones particulares, estas instalaciones se realizan como plugins. Los proveedores suelen usar configuraciones diferentes por lo cuál se debe revisar la documentación de cada proveedor específico. [Link 1](https://www.terraform.io/docs/configuration/providers.html), [Link 2](https://www.terraform.io/docs/providers/index.html).
-- **resource**: este objeto contiene la configuración de los objetos de la infraestructura a desplegar, por ejemplo: Droplets, Load Balancer y Dominios de DigitalOcean, como también Máquinas Virtuales de AWS. [Link](https://www.terraform.io/docs/configuration/resources.html)
-- **data**: este objeto permite extraer y obtener datos desde diversas fuentes locales o de servicios externos para ser usados en los archivos de Configuración de Terraform. Cada proveedor Cloud pueden disponer de datos diferentes, por ejemplo: claves SSH de Digital Ocean. [Link](https://www.terraform.io/docs/configuration/data-sources.html).
-- **variable**: este objeto permite la configuración de variables que pueden ser utilizadas en los archivos de Configuración. Además, es posible utilizar variables de ambiente definidas en la sesión actual con este objeto, la definición de estas variables debe comenzar con TF_VAR, por ejemplo: TF_VAR_DO_TOKEN=12345. [Link](https://www.terraform.io/docs/configuration/variables.html).
+- **Terraform**: este objeto contiene la configuración principal del proyecto Terraform, es el lugar donde se definen los proveedores a utilizar. [Link](https://www.terraform.io/docs/configuration/terraform.html).
+- **Provider**: este objeto contiene la configuración del proveedor a utilizar. Terraform puede utilizar diferentes tipos de proveedores Cloud como soluciones particulares, estas instalaciones se realizan como plugins. Los proveedores suelen usar configuraciones diferentes por lo cuál se debe revisar la documentación de cada proveedor específico. [Link 1](https://www.terraform.io/docs/configuration/providers.html), [Link 2](https://www.terraform.io/docs/providers/index.html).
+- **Resource**: este objeto contiene la configuración de los objetos de la infraestructura a desplegar, por ejemplo: Droplets, Load Balancer y Dominios de DigitalOcean, como también Máquinas Virtuales de AWS. [Link](https://www.terraform.io/docs/configuration/resources.html)
+- **Data**: este objeto permite extraer y obtener datos desde diversas fuentes locales o de servicios externos para ser usados en los archivos de Configuración de Terraform. Cada proveedor Cloud pueden disponer de datos diferentes, por ejemplo: claves SSH de Digital Ocean. [Link](https://www.terraform.io/docs/configuration/data-sources.html).
+- **Variable**: este objeto permite la configuración de variables que pueden ser utilizadas en los archivos de Configuración. Además, es posible utilizar variables de ambiente definidas en la sesión actual con este objeto, la definición de estas variables debe comenzar con TF_VAR, por ejemplo: TF_VAR_DO_TOKEN=12345. [Link](https://www.terraform.io/docs/configuration/variables.html).
 
 ## Requerimientos
 
@@ -23,13 +23,17 @@ Terraform funciona mediante archivos de configuración utilizando el formato Has
 - Configuración de una Clave Pública SSH
 - Dominio Público Configurado
 
+### Cuenta en DigitalOcean
+
+Si no se cuenta con una cuenta en DigitalOcean, se puede crear una nueva usando el código de Referido que otorga $100 para usar en cualquiera de sus servicios. [Link](https://refer.codes/digitalocean/)
+
 ### Clave de Acceso Personal
 
-Generar la clave de acceso Personal de la cuenta de Digital Ocean a utilizar. [Link]()
+Generar la clave de acceso Personal de la cuenta de Digital Ocean a utilizar. [Link](https://www.digitalocean.com/docs/apis-clis/api/create-personal-access-token/)
 
 ### Claves SSH
 
-Generar un par de claves SSH nuevas en la máquina donde utilizaremos terraform. Para luego agregarlas a nuestra cuenta de Digital Ocean. [Link]()
+Generar un par de claves SSH nuevas en la máquina donde utilizaremos terraform. Para luego agregarlas a nuestra cuenta de Digital Ocean. [Link](https://www.digitalocean.com/community/tutorials/how-to-set-up-ssh-keys-2)
 
 ## Despligue de Infraestructura
 
@@ -534,10 +538,10 @@ Fin de la guia
 
 ## Referencias
 
-- https://www.digitalocean.com/community/tutorials/how-to-use-terraform-with-digitalocean
-- https://www.digitalocean.com/community/tutorials/how-to-structure-a-terraform-project
-- https://www.digitalocean.com/docs/apis-clis/api/create-personal-access-token/
-- https://www.digitalocean.com/community/tutorials/how-to-set-up-ssh-keys-2
-- https://stackoverflow.com/questions/59789730/how-can-i-read-environment-variables-from-a-env-file-into-a-terraform-script
-- https://registry.terraform.io/providers/digitalocean/digitalocean/latest/docs
-- https://registry.terraform.io/providers/digitalocean/digitalocean/latest/docs/resources/domain
+- [Crear una cuenta nueva en Digital Ocean obteniendo crédito de referido](https://refer.codes/digitalocean/)
+- [¿Cómo crear una Token de Acceso Personal?](https://www.digitalocean.com/docs/apis-clis/api/create-personal-access-token/)
+- [¿Cómo setear una clave de conexión SSH?](https://www.digitalocean.com/community/tutorials/how-to-set-up-ssh-keys-2)
+- [Guia: how-to-use-terraform-with-digitalocean](https://www.digitalocean.com/community/tutorials/how-to-use-terraform-with-digitalocean)
+- [Guia: how-to-structure-a-terraform-project](https://www.digitalocean.com/community/tutorials/how-to-structure-a-terraform-project)
+- [¿Cómo leer variables de ambiente en un script de Terraform?](https://stackoverflow.com/questions/59789730/how-can-i-read-environment-variables-from-a-env-file-into-a-terraform-script)
+- [Terraform DigitalOcean doc](https://registry.terraform.io/providers/digitalocean/digitalocean/latest/docs)
